@@ -1,0 +1,15 @@
+services:
+  gitserver:
+    image: gitserver
+    build:
+      dockerfile: src/gitserver/Dockerfile
+    volumes:
+      - ./repos:/srv/git
+    ports:
+      - 9418:9418
+  gitweb:
+    image: rockstorm/gitweb
+    volumes:
+      - ./repos:/srv/git
+    ports:
+      - 8080:80
