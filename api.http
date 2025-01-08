@@ -5,16 +5,16 @@ GET http://localhost:8080/repos
 POST http://localhost:8080/repos
 
 {
-   "name": "testproject",
+   "name": "aaaaaa",
    "description": "code, but bad"
 }
 
 ### GET a single repo
-GET http://localhost:8080/repo/testproject.git
+GET http://localhost:8080/repo/aaaaaa.git
 
 ### UPDATE a repo
-PUT http://localhost:8080/repo/testproject.git
+PUT http://localhost:8080/repo/aaaaaa.git
 
 ### DELETE a repo
-DELETE http://localhost:8080/repo/testproject.git
+DELETE http://localhost:8080/repo/aaaaaa.git
 

@@ -10,22 +10,43 @@ import (
 	"strings"
 )
 
+func Endpoint() string {
+	return "git://localhost:9418"
+}
+
 type Service struct {
 	Url      string
 	RepoPath string
 }
 
-type Repo struct {
-	Url         string
-	Description string
-	Name        string
-}
-
 func NewService() *Service {
 	return &Service{
-		Url:      "git://localhost:9418",
-		RepoPath: "repos",
+		Url:      Endpoint(),
+		RepoPath: RepoDir(),
 	}
+}
+
+type Repo struct {
+	Url           string
+	Description   string
+	Name          string
+	GitName       string
+	DefaultBranch string
+	repoPath      string
+}
+
+func NewRepo(name string) Repo {
+	normalizedName := TrimSuffix(name, ".git")
+	repo := Repo{
+		Name:          normalizedName,
+		GitName:       fmt.Sprintf("%s.git", normalizedName),
+		DefaultBranch: "main",
+		Description:   "",
+	}
+	repo.Url = fmt.Sprintf("%s/%s", Endpoint(), repo.GitName)
+	repo.repoPath = path.Join(RepoDir(), repo.GitName)
+
+	return repo
 }
 
 func (s Service) GetAllRepos() []Repo {
@@ -40,66 +61,75 @@ func (s Service) GetAllRepos() []Repo {
 	for _, file := range directories {
 		fmt.Println(filepath.Join(s.RepoPath, file.Name()))
 		if file.IsDir() && strings.HasSuffix(file.Name(), ".git") {
-			strings.HasSuffix(file.Name(), ".git")
-
-			description, err := os.ReadFile(filepath.Join(s.RepoPath, file.Name(), "description"))
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			repo := Repo{
-				Name:        TrimSuffix(file.Name(), ".git"),
-				Url:         fmt.Sprintf("%s/%s", s.Url, file.Name()),
-				Description: strings.TrimSpace(string(description)),
-			}
-
-			repos = append(repos, repo)
+			repos = append(repos, s.Get(file.Name()))
 		}
 	}
 
 	return repos
 }
 
-func (s Service) Create(name string, description string) (Repo, error) {
+func RootDir() string {
 	pwd, err := os.Getwd()
 	if err != nil {
-		fmt.Println(err)
-		return Repo{}, err
+		log.Printf("Failed to get root directory: %v", err)
+		panic(err)
 	}
 
-	repoPath := path.Join(pwd, "repos", fmt.Sprintf("%s.git", name))
+	return pwd
+}
 
-	cmd := exec.Command("mkdir", "-p", repoPath)
-	err = cmd.Run()
-	if err != nil {
-		log.Printf("Failed to create directory: %v", repoPath)
-		return Repo{}, err
+func RepoDir() string {
+	return path.Join(RootDir(), "repos")
+}
+
+func (s Service) RepoExists(repoPath string) bool {
+	_, err := os.Open(repoPath)
+	if os.IsExist(err) {
+		return true
+	}
+	return false
+}
+
+func (s Service) Create(name string, description string) error {
+	repo := NewRepo(name)
+	repo.Description = description
+
+	if s.RepoExists(repo.repoPath) {
+		return nil
 	}
 
-	cmd = exec.Command("git", "init", "--bare", "--initial-branch", "main")
-	cmd.Dir = repoPath
+	cmd := exec.Command("mkdir", "-p", repo.repoPath)
+	err := cmd.Run()
+	if err != nil {
+		log.Printf("Command: %v", cmd)
+		log.Printf("Failed to create directory: %v", repo.repoPath)
+		return err
+	}
+
+	cmd = exec.Command("git", "init", "--bare", "--initial-branch", repo.DefaultBranch)
+	cmd.Dir = repo.repoPath
 	err = cmd.Run()
 	if err != nil {
+		log.Printf("Command: %v", cmd)
 		log.Printf("Failed to initialize git repository: %v", err)
-		return Repo{}, err
+		return err
 	}
 
 	cmd = exec.Command("touch", "git-daemon-export-ok")
-	cmd.Dir = repoPath
+	cmd.Dir = repo.repoPath
 	err = cmd.Run()
 	if err != nil {
 		log.Printf("Failed to create git-daemon-export-ok: %v", err)
-		return Repo{}, err
+		return err
 	}
 
-	repo := Repo{
-		Name:        name,
-		Description: strings.TrimSpace(description),
-		Url:         fmt.Sprintf("%s/%s.git", s.Url, name),
+	if description != "" {
+		if err := os.WriteFile(path.Join(repo.repoPath, "description"), []byte(description), 0644); err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	return repo, nil
+	return nil
 }
 
 func (s Service) Update() {
@@ -110,7 +140,21 @@ func (s Service) Destroy() {
 
 }
 
-func (s Service) Get() {
+func (s Service) Get(repoName string) Repo {
+	repo := NewRepo(repoName)
+
+	description, err := os.ReadFile(filepath.Join(repo.repoPath, "description"))
+	repo.Description = strings.TrimSpace(string(description))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return repo
+}
+
+// What if we Return array of commits for the repo
+func (s Service) GetCommits(repo Repo) {
 
 }
 
