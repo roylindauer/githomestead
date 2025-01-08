@@ -1,4 +1,4 @@
 /repos
 !/repos/.gitkeep
-
+.env
 .idea

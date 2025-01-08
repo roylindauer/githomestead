@@ -2,7 +2,7 @@
 GET http://localhost:8080/repos
 
 ### CREATE a repo
-POST http://localhost:8080/repo
+POST http://localhost:8080/repos
 
 {
    "name": "testproject",
