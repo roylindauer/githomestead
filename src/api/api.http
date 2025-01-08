@@ -1,0 +1,20 @@
+### GET repos
+GET http://localhost:8080/repos
+
+### CREATE a repo
+POST http://localhost:8080/repo
+
+{
+   "name": "testproject",
+   "description": "code, but bad"
+}
+
+### GET a single repo
+GET http://localhost:8080/repo/testproject.git
+
+### UPDATE a repo
+PUT http://localhost:8080/repo/testproject.git
+
+### DELETE a repo
+DELETE http://localhost:8080/repo/testproject.git
+
