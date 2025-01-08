@@ -2,3 +2,4 @@
 !/repos/.gitkeep
 .env
 .idea
+/bin

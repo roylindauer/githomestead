@@ -13,3 +13,11 @@ services:
       - ./repos:/srv/git
     ports:
       - 8081:80
+  gitapi:
+    image: gitapi
+    build:
+      dockerfile: Dockerfile.api
+    volumes:
+      - ./repos:/srv/git
+    ports:
+      - 8080:80
