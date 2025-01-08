@@ -27,22 +27,20 @@ func NewService() *Service {
 }
 
 func (s Service) GetAllRepos() []Repo {
-	// so i basically just need to read from /repos and return a list of .git projects
-	root := s.RepoPath
 	var repos []Repo
 
-	directories, err := os.ReadDir(root)
+	directories, err := os.ReadDir(s.RepoPath)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, file := range directories {
-		fmt.Println(filepath.Join(root, file.Name()))
+		fmt.Println(filepath.Join(s.RepoPath, file.Name()))
 		if file.IsDir() && strings.HasSuffix(file.Name(), ".git") {
 			strings.HasSuffix(file.Name(), ".git")
 
-			url := fmt.Sprintf("%s/%s", s.Url, file.Name())
-			description, err := os.ReadFile(filepath.Join(root, file.Name(), "description"))
+			description, err := os.ReadFile(filepath.Join(s.RepoPath, file.Name(), "description"))
 
 			if err != nil {
 				log.Fatal(err)
@@ -50,7 +48,7 @@ func (s Service) GetAllRepos() []Repo {
 
 			repo := Repo{
 				Name:        file.Name(),
-				Url:         url,
+				Url:         fmt.Sprintf("%s/%s", s.Url, file.Name()),
 				Description: strings.TrimSpace(string(description)),
 			}
 
@@ -59,4 +57,20 @@ func (s Service) GetAllRepos() []Repo {
 	}
 
 	return repos
+}
+
+func (s Service) Create() {
+
+}
+
+func (s Service) Update() {
+
+}
+
+func (s Service) Destroy() {
+
+}
+
+func (s Service) Get() {
+
 }

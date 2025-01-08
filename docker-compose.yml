@@ -2,7 +2,7 @@ services:
   gitserver:
     image: gitserver
     build:
-      dockerfile: src/gitserver/Dockerfile
+      dockerfile: Dockerfile.gitserver
     volumes:
       - ./repos:/srv/git
     ports:
