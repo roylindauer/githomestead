@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"gitapi/internal/gitserver"
 	"gitapi/internal/transport"
+	"log"
 )
 
 func main() {
@@ -11,6 +11,6 @@ func main() {
 
 	server := transport.NewServer(*svc)
 	if err := server.Serve(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }

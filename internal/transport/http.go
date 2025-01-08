@@ -33,8 +33,6 @@ func NewServer(gitSvc gitserver.Service) *Server {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		w.WriteHeader(http.StatusOK)
 	})
 
 	mux.HandleFunc("POST /repos", func(w http.ResponseWriter, r *http.Request) {
@@ -60,8 +58,6 @@ func NewServer(gitSvc gitserver.Service) *Server {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		w.WriteHeader(http.StatusOK)
 	})
 
 	mux.HandleFunc("GET /repo/{name}", func(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +72,6 @@ func NewServer(gitSvc gitserver.Service) *Server {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		w.WriteHeader(http.StatusOK)
 	})
 
 	return &Server{

@@ -59,7 +59,6 @@ func (s Service) GetAllRepos() []Repo {
 	}
 
 	for _, file := range directories {
-		fmt.Println(filepath.Join(s.RepoPath, file.Name()))
 		if file.IsDir() && strings.HasSuffix(file.Name(), ".git") {
 			repos = append(repos, s.Get(file.Name()))
 		}
