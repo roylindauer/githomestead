@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -37,6 +38,7 @@ type Repo struct {
 
 func NewRepo(name string) Repo {
 	normalizedName := TrimSuffix(name, ".git")
+	normalizedName = Slugify(normalizedName)
 	repo := Repo{
 		Name:          normalizedName,
 		GitName:       fmt.Sprintf("%s.git", normalizedName),
@@ -152,7 +154,7 @@ func (s Service) Get(repoName string) Repo {
 	return repo
 }
 
-// What if we Return array of commits for the repo
+// GetCommits What if we Return array of commits for the repo
 func (s Service) GetCommits(repo Repo) {
 
 }
@@ -162,4 +164,16 @@ func TrimSuffix(s, suffix string) string {
 		s = s[:len(s)-len(suffix)]
 	}
 	return s
+}
+
+func Slugify(s string) string {
+	result := strings.ToLower(s)
+	result = strings.ReplaceAll(result, " ", "-")
+	reg, err := regexp.Compile("[^a-z0-9-]+")
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	result = reg.ReplaceAllString(result, "")
+	return result
 }

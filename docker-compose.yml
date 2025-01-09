@@ -1,20 +1,20 @@
 services:
-  gitserver:
-    image: gitserver
+  server:
+    image: server
     build:
       dockerfile: Dockerfile.server
     volumes:
       - ./repos:/srv/git
     ports:
       - 9418:9418
-  gitweb:
+  web:
     image: rockstorm/gitweb
     volumes:
       - ./repos:/srv/git
     ports:
       - 8081:80
-  gitapi:
-    image: gitapi
+  api:
+    image: api
     build:
       dockerfile: Dockerfile.api
     volumes:
