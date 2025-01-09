@@ -171,7 +171,7 @@ func Slugify(s string) string {
 	result = strings.ReplaceAll(result, " ", "-")
 	reg, err := regexp.Compile("[^a-z0-9-]+")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return ""
 	}
 	result = reg.ReplaceAllString(result, "")
