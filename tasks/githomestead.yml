@@ -16,6 +16,11 @@
       - "--exclude=.env"
       - "--exclude=repos"
 
+- name: Ensure repos directory exists on the server.
+  file:
+    path: "{{ config_dir }}/{{ project_name }}/repos"
+    state: directory
+
 - name: Ensure internet-monitoring environment is running.
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/{{ project_name }}"
