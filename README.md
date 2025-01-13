@@ -18,8 +18,6 @@ my repos in my homelab on a VM I control.
 
 This project is how I am going to do that. 
 
-A fourth as-of-yet-to-be-created component is a CLI I can use to create and manage my repos. 
-
 This is built in Go, runs in a docker compose env, and is deployed to 
 my homelab using Ansible. 
 
@@ -33,7 +31,7 @@ my homelab using Ansible.
 
 * Fleshed out REST API
 * CLI for REST API to have a local tool to manage repos
-* Maybe a nicer webui using that same REST API
+* Maybe a nicer webui (hello htmx?) using that same REST API
 
 ## Setup
 
