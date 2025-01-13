@@ -13,7 +13,7 @@ type Config struct {
 	Endpoint string `yaml:"endpoint"`
 }
 
-func main() {
+func readConfig(cfg *Config) {
 	f, err := os.Open("config.yml")
 	if err != nil {
 		log.Println(err)
@@ -28,14 +28,17 @@ func main() {
 		}
 	}(f)
 
-	var cfg Config
-
 	decoder := yaml.NewDecoder(f)
 	err = decoder.Decode(&cfg)
 	if err != nil {
 		log.Println(err)
 		panic(err)
 	}
+}
+
+func main() {
+	var cfg Config
+	readConfig(&cfg)
 
 	svc := gitserver.NewService(cfg.Endpoint)
 
