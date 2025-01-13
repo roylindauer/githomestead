@@ -11,18 +11,14 @@ import (
 	"strings"
 )
 
-func Endpoint() string {
-	return "git://localhost:9418"
-}
-
 type Service struct {
 	Url      string
 	RepoPath string
 }
 
-func NewService() *Service {
+func NewService(endpoint string) *Service {
 	return &Service{
-		Url:      Endpoint(),
+		Url:      fmt.Sprintf("git://%s", endpoint),
 		RepoPath: RepoDir(),
 	}
 }
@@ -36,7 +32,7 @@ type Repo struct {
 	repoPath      string
 }
 
-func NewRepo(name string) Repo {
+func (s Service) NewRepo(name string) Repo {
 	normalizedName := TrimSuffix(name, ".git")
 	normalizedName = Slugify(normalizedName)
 	repo := Repo{
@@ -45,7 +41,7 @@ func NewRepo(name string) Repo {
 		DefaultBranch: "main",
 		Description:   "",
 	}
-	repo.Url = fmt.Sprintf("%s/%s", Endpoint(), repo.GitName)
+	repo.Url = fmt.Sprintf("%s/%s", s.Url, repo.GitName)
 	repo.repoPath = path.Join(RepoDir(), repo.GitName)
 
 	return repo
@@ -92,7 +88,7 @@ func (s Service) RepoExists(repoPath string) bool {
 }
 
 func (s Service) Create(name string, description string) error {
-	repo := NewRepo(name)
+	repo := s.NewRepo(name)
 	repo.Description = description
 
 	if s.RepoExists(repo.repoPath) {
@@ -142,7 +138,7 @@ func (s Service) Destroy() {
 }
 
 func (s Service) Get(repoName string) Repo {
-	repo := NewRepo(repoName)
+	repo := s.NewRepo(repoName)
 
 	description, err := os.ReadFile(filepath.Join(repo.repoPath, "description"))
 	repo.Description = strings.TrimSpace(string(description))
