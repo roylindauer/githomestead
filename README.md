@@ -24,7 +24,7 @@ my homelab using Ansible.
 ## Features
 
 * REST API for git repositories
-* Git WebUI to view git repositories
+* Git WebUI to view git repositories using https://git-scm.com/book/en/v2/Git-on-the-Server-GitWeb 
 * Git running in daemon mode to serve git repositories
 
 **Future Features**
