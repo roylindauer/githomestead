@@ -1,6 +1,6 @@
 ---
 gitserver_enable: true
 config_dir: /opt/githomestead
-project_name: gitcode
+project_name: githomestead
 endpoint: git.lindauerlab.net:9418
 port: 8080
