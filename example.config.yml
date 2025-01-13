@@ -1,3 +1,4 @@
 ---
 gitserver_enable: true
 config_dir: /opt/githomestead
+project_name: gitcode
