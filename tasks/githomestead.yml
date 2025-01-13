@@ -1,0 +1,22 @@
+---
+- name: Ensure project directory exists on the server.
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+
+- name: Copy project root to the server (excluding unnecessary files)
+  synchronize:
+    src: .
+    dest: "{{ config_dir }}"
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=README.md"
+      - "--exclude=inventory.ini"
+      - "--exclude=example.inventory.ini"
+      - "--exclude=.env"
+
+- name: Ensure internet-monitoring environment is running.
+  community.docker.docker_compose_v2:
+    project_src: "{{ config_dir }}"
+    build: always
+  become: false

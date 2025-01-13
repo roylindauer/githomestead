@@ -1,4 +1,4 @@
-# GitCode
+# Git Homestead
 
-Its my own git server and cli to do repo things 
+> Your personal land for cultivating repositories.
 
