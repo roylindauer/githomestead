@@ -7,12 +7,14 @@ services:
       - ./repos:/srv/git
     ports:
       - 9418:9418
+    restart: on-failure
   web:
     image: rockstorm/gitweb
     volumes:
       - ./repos:/srv/git
     ports:
       - 8081:80
+    restart: on-failure
   api:
     image: api
     build:
@@ -21,3 +23,4 @@ services:
       - ./repos:/srv/git
     ports:
       - 8080:8080
+    restart: on-failure

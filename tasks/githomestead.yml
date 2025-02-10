@@ -5,9 +5,9 @@
     state: directory
 
 - name: Copy project root to the server (excluding unnecessary files)
-  synchronize:
-    src: .
-    dest: "{{ config_dir }}"
+  ansible.posix.synchronize:
+    src: ./ 
+    dest: "{{ config_dir }}/{{ project_name }}"
     rsync_opts:
       - "--exclude=.git"
       - "--exclude=README.md"
@@ -17,12 +17,14 @@
       - "--exclude=repos"
 
 - name: Ensure repos directory exists on the server.
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir }}/{{ project_name }}/repos"
     state: directory
 
-- name: Ensure internet-monitoring environment is running.
+- name: Ensure githomestead environment is running.
   community.docker.docker_compose_v2:
     project_src: "{{ config_dir }}/{{ project_name }}"
     build: always
+    recreate: always
+    state: present
   become: false
